@@ -27,7 +27,10 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	db := databases.ConnectDatabase()
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, name, age FROM user")
+	limit := 10
+	offset := 0
+
+	rows, err := db.Query("SELECT id, name, age FROM user LIMIT ? OFFSET ?", limit, offset)
 	if err != nil {
 		log.Print(err)
 	}
@@ -90,5 +93,27 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsersFiltered(w http.ResponseWriter, r *http.Request) {
+	var users models.User
+	var arrUsers []models.User
 
+	db := databases.ConnectDatabase()
+	defer db.Close()
+
+	limit := 10
+	offset := 0
+	filter := r.FormValue("name")
+
+	rows, err := db.Query("SELECT id, name, age FROM user WHERE name LIKE ? ORDER BY name LIMIT ? OFFSET ?", filter, limit, offset)
+	if err != nil {
+		log.Print(err)
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&users.ID, &users.Name, &users.Age)
+		if err != nil {
+			log.Print(err)
+		} else {
+			arrUsers = append(arrUsers, users)
+		}
+	}
 }
