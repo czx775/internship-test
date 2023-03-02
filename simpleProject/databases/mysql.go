@@ -7,7 +7,7 @@ import (
 )
 
 func ConnectDatabase() *sql.DB {
-	db, err := sql.Open("mysql", "root:nicolas1@tcp(127.0.0.1:3306)/simpleProject")
+	db, err := sql.Open("mysql", "root:nicolas1@tcp(127.0.0.1:3306)/user")
 	if err != nil {
 		log.Print(err)
 	}
